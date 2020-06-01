@@ -1,0 +1,22 @@
+{
+  "name": "enatours",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jinnatul/eNatours.git"
+  },
+  "author": "Morol",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jinnatul/eNatours/issues"
+  },
+  "homepage": "https://github.com/jinnatul/eNatours#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
