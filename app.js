@@ -1,14 +1,22 @@
+let fs = require('fs');
 let express = require('express');
 let app = express();
 
 let port = 8000;
 
+let tours = JSON.parse( 
+  fs.readFileSync(`${__dirname}/resources/assets/data/tours-simple.json`)
+);
+
 app.get('/', (req, res) => {
   res
     .status(200)
     .json({
-      message: 'Welcome Morol',
-      app: 'eNatours'
+      status: "ok",
+      length: tours.length,
+      data: {
+        tours
+      }
     })
 })
 
