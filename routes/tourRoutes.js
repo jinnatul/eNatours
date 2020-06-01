@@ -4,10 +4,13 @@ let {
   createTour, 
   getTour, 
   updateTour, 
-  deleteTour 
+  deleteTour,
+  checkId 
 } = require('./../controllers/tourController');
 
 let router = express.Router();
+
+router.param('id', checkId);
 
 router.route('/')
   .get(getAllTours)
