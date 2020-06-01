@@ -5,6 +5,7 @@ let userRouter = require('./routes/userRoutes');
 
 let app = express();
 
+// Middlewares
 app.use(morgan('dev'));
 app.use(express.json());
 app.use((req, res, next) => {
@@ -16,6 +17,7 @@ app.use((req, res, next) => {
   next();
 })
 
+// Routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
