@@ -1,18 +1,21 @@
 let fs = require('fs');
 let express = require('express');
+let morgan = require('morgan');
+
 let app = express();
 let port = 8000;
 
+app.use(morgan('dev'));
 app.use(express.json());
 app.use((req, res, next) => {
   console.log('Hello from our Middleware');
   next();
 })
-
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 })
+
 
 let tours = JSON.parse( 
   fs.readFileSync(`${__dirname}/resources/assets/data/tours-simple.json`)
