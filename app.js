@@ -1,9 +1,9 @@
-let fs = require('fs');
 let express = require('express');
 let morgan = require('morgan');
+let tourRouter = require('./routes/tourRoutes');
+let userRouter = require('./routes/userRoutes');
 
 let app = express();
-let port = 8000;
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -16,139 +16,7 @@ app.use((req, res, next) => {
   next();
 })
 
-
-let tours = JSON.parse( 
-  fs.readFileSync(`${__dirname}/resources/assets/data/tours-simple.json`)
-);
-
-let getAllTours = (req, res) => {
-  console.log(req.requestTime);
-  res.status(200).json({
-      status: "ok",
-      requestTime: req.requestTime,
-      length: tours.length,
-      data: {
-        tours
-      }
-    })
-}
-
-let getTour = (req, res) => {
-  let id = req.params.id * 1;
-  if (id > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid request'
-    })
-  }
-  let tour = tours.find(el => el.id === id);
-  res.status(200).json({
-      status: "ok",
-      data: {
-        tour
-      }
-    })
-}
-
-let createTour = (req, res) => {
-  let newId = tours[tours.length - 1].id + 1;
-  let newTour = Object.assign({id: newId}, req.body);
-  tours.push(newTour);
-  fs.writeFile(`${__dirname}/resources/assets/data/tours-simple.json`, 
-    JSON.stringify(tours), (err) => {
-      res.status(201).json({
-        status: 'ok',
-        data: {
-          tour: newTour
-        }
-      })
-    })
-}
-
-let updateTour = (req, res) => {
-  let id = req.params.id * 1;
-  if (id > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid request'
-    })
-  }
-  res.status(200).json({
-    success: 'ok',
-    message: 'Update succes'
-  })
-}
-
-let deleteTour = (req, res) => {
-  let id = req.params.id * 1;
-  if (id > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid request'
-    })
-  }
-  res.status(204).json({
-    success: 'ok',
-    data: null
-  })
-}
-
-let getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-let getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-let createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-let updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-let deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-
-
-let tourRouter = express.Router();
-let userRouter = express.Router();
-
-tourRouter.route('/')
-  .get(getAllTours)
-  .post(createTour)
-
-tourRouter.route('/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour)
-
-userRouter.route('/')
-  .get(getAllUsers)
-  .post(createUser)
-
-userRouter.route('/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser)
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-app.listen(port, () => {
-  console.log(`Server running on ${port}`);
-});
+module.exports = app;
