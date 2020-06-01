@@ -93,17 +93,61 @@ let deleteTour = (req, res) => {
   })
 }
 
-app
-  .route('/api/v1/tours/')
+let getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'Not define'
+  });
+}
+let getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'Not define'
+  });
+}
+let createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'Not define'
+  });
+}
+let updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'Not define'
+  });
+}
+let deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'Not define'
+  });
+}
+
+
+let tourRouter = express.Router();
+let userRouter = express.Router();
+
+tourRouter.route('/')
   .get(getAllTours)
   .post(createTour)
 
-app
-  .route('/api/v1/tours/:id')
+tourRouter.route('/:id')
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour)
 
+userRouter.route('/')
+  .get(getAllUsers)
+  .post(createUser)
+
+userRouter.route('/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser)
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
