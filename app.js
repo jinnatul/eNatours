@@ -4,14 +4,25 @@ let app = express();
 let port = 8000;
 
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log('Hello from our Middleware');
+  next();
+})
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+})
 
 let tours = JSON.parse( 
   fs.readFileSync(`${__dirname}/resources/assets/data/tours-simple.json`)
 );
 
 let getAllTours = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
       status: "ok",
+      requestTime: req.requestTime,
       length: tours.length,
       data: {
         tours
