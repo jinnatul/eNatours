@@ -60,6 +60,20 @@ app.post('/api/v1/tours', (req, res) => {
     })
 })
 
+app.patch('/api/v1/tours/:id', (req, res) => {
+  let id = req.params.id * 1;
+  if (id > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid request'
+    })
+  }
+
+  res.status(200).json({
+    success: 'ok',
+    message: 'Update succes'
+  })
+})
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
