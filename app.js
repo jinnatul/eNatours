@@ -6,9 +6,12 @@ let userRouter = require('./routes/userRoutes');
 let app = express();
 
 // Middlewares
-app.use(morgan('dev'));
+//console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json());
-app.use(express.static(`${__dirname}/resources/public`));
+app.use(express.static(`${__dirname}/resources/public`)); // access static content
 app.use((req, res, next) => {
   console.log('Hello from our Middleware');
   next();
