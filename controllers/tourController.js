@@ -35,7 +35,7 @@ exports.getTour = async (req, res) => {
   try {
     let tour = await Tour.findById(req.params.id);
     //let tour = await Tour.findOne({ _id: req.params.id })
-    
+
     res.status(200).json({
         status: "ok",
         requestTime: req.requestTime,
@@ -76,11 +76,28 @@ exports.createTour = async (req, res) => {
   
 }
 
-exports.updateTour = (req, res) => {  
-  res.status(200).json({
-    success: 'ok',
-    message: 'Update succes'
-  })
+exports.updateTour = async (req, res) => {  
+  try {
+    let tour = await Tour.findByIdAndUpdate(
+      req.params.id, 
+      req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({
+        status: "ok",
+        requestTime: req.requestTime,
+        data: {
+          tour
+        }
+    })
+  } catch (err) {
+    res.status(404).json({
+      success: 'fail',
+      message: err
+    })
+  }
 }
 
 exports.deleteTour = (req, res) => {
