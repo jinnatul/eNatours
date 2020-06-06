@@ -23,16 +23,26 @@ exports.getAllTours = async (req, res) => {
     //let tours = await Tour.find({ duration: 5, difficulty: 'easy' });
 
     // Build Query
-    // 1) Filtering // /api/v1/tours?duration=5&difficulty=easy&page=2
+    // 1A) Filtering // /api/v1/tours?duration=5&difficulty=easy&page=2
     let queryObj = {...req.query};
     let filterObj = ['page', 'sort', 'limit', 'fields']
     filterObj.forEach(el => delete queryObj[el]); 
 
-    // 2) Advance Filtering // api/v1/tours?duration[gte]=5&difficulty=easy&page=2
+    // 1B) Advance Filtering // api/v1/tours?duration[gte]=5&difficulty=easy&page=2
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-
+    
     let query = Tour.find(JSON.parse(queryStr));
+
+    // 2) Sorting /api/v1/tours?sort=price
+    if (req.query.sort) {
+      let sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    }
+    else {
+      query = query.sort('-createdAt');
+    }
+    
 
     // Execute query
     let tours = await query;
