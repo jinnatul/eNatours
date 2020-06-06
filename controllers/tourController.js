@@ -34,13 +34,29 @@ exports.getTour = (req, res) => {
   //   })
 }
 
-exports.createTour = (req, res) => {
-  res.status(201).json({
-      status: "ok",
-      // data: {
-      //   tour
-      // }
+exports.createTour = async (req, res) => {
+  /****1 way****/ 
+  // let newTour = new Tour({})
+  // newTour.save()
+
+  /****Another way****/
+  // Tour.create({})
+
+  try {
+    let newTour = await Tour.create(req.body);
+    res.status(201).json({
+        status: "ok",
+        data: {
+          newTour
+        }
     })
+  } catch (err) {
+    res.status(404).json({
+      success: 'fail',
+      message: err
+    })
+  }
+  
 }
 
 exports.updateTour = (req, res) => {  
