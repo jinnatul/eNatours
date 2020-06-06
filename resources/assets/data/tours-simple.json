@@ -1,5 +1,6 @@
 [
   {
+    "id": 0,
     "name": "The Forest Hiker",
     "duration": 5,
     "maxGroupSize": 25,
@@ -15,6 +16,7 @@
   },
 
   {
+    "id": 1,
     "name": "The Sea Explorer",
     "duration": 7,
     "maxGroupSize": 15,
@@ -30,6 +32,7 @@
   },
 
   {
+    "id": 2,
     "name": "The Snow Adventurer",
     "duration": 4,
     "maxGroupSize": 10,
@@ -45,6 +48,7 @@
   },
 
   {
+    "id": 3,
     "name": "The City Wanderer",
     "duration": 9,
     "maxGroupSize": 20,
@@ -60,6 +64,7 @@
   },
 
   {
+    "id": 4,
     "name": "The Park Camper",
     "duration": 10,
     "maxGroupSize": 15,
@@ -75,6 +80,7 @@
   },
 
   {
+    "id": 5,
     "name": "The Sports Lover",
     "duration": 14,
     "maxGroupSize": 8,
@@ -90,6 +96,7 @@
   },
 
   {
+    "id": 6,
     "name": "The Wine Taster",
     "duration": 5,
     "maxGroupSize": 8,
@@ -105,6 +112,7 @@
   },
 
   {
+    "id": 7,
     "name": "The Star Gazer",
     "duration": 9,
     "maxGroupSize": 8,
@@ -120,6 +128,7 @@
   },
 
   {
+    "id": 8,
     "name": "The Northern Lights",
     "duration": 3,
     "maxGroupSize": 12,

@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 let dotenv = require('dotenv');
+
 dotenv.config({ path: './config.env' });
 let app = require('./app');
 

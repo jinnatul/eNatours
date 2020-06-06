@@ -14,7 +14,25 @@ exports.checkBody = (req, res, next) => {
 // Requests
 exports.getAllTours = async (req, res) => {
   try {
-    let tours = await Tour.find();
+    /***** 1st way ******/
+    // let tours = await Tour.find()
+    //   .where('duration').equals(5)
+    //   .where('difficulty').equals('easy');
+
+    /***** 2nd way ******/
+    //let tours = await Tour.find({ duration: 5, difficulty: 'easy' });
+
+    // Build Query
+    let queryObj = {...req.query};
+    let filterObj = ['page', 'sort', 'limit', 'fields']
+    filterObj.forEach(el => delete queryObj[el]);
+
+    let query = Tour.find(queryObj);
+
+    // Execute query
+    let tours = await query;
+
+    // Send response
     res.status(200).json({
         status: "ok",
         requestTime: req.requestTime,
@@ -36,6 +54,7 @@ exports.getTour = async (req, res) => {
     let tour = await Tour.findById(req.params.id);
     //let tour = await Tour.findOne({ _id: req.params.id })
 
+    // Send response
     res.status(200).json({
         status: "ok",
         requestTime: req.requestTime,
@@ -61,6 +80,8 @@ exports.createTour = async (req, res) => {
 
   try {
     let newTour = await Tour.create(req.body);
+
+    // Send response
     res.status(201).json({
         status: "ok",
         data: {
@@ -85,6 +106,7 @@ exports.updateTour = async (req, res) => {
       runValidators: true
     });
 
+    // Send response
     res.status(200).json({
         status: "ok",
         requestTime: req.requestTime,
@@ -104,6 +126,7 @@ exports.deleteTour = async (req, res) => {
   try {
     await Tour.findByIdAndDelete(req.params.id);
 
+    // Send response
     res.status(204).json({
         status: "ok",
         requestTime: req.requestTime,
