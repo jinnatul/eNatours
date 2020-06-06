@@ -12,26 +12,43 @@ exports.checkBody = (req, res, next) => {
 }
 
 // Requests
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-      status: "ok",
-      requestTime: req.requestTime,
-      // length: tours.length,
-      // data: {
-      //   tours
-      // }
+exports.getAllTours = async (req, res) => {
+  try {
+    let tours = await Tour.find();
+    res.status(200).json({
+        status: "ok",
+        requestTime: req.requestTime,
+        length: tours.length,
+        data: {
+          tours
+        }
     })
+  } catch (err) {
+    res.status(404).json({
+      success: 'fail',
+      message: err
+    })
+  }
 }
 
-exports.getTour = (req, res) => {
-  let id = req.params.id * 1;
-  // let tour = tours.find(el => el.id === id);
-  // res.status(200).json({
-  //     status: "ok",
-  //     data: {
-  //       tour
-  //     }
-  //   })
+exports.getTour = async (req, res) => {
+  try {
+    let tour = await Tour.findById(req.params.id);
+    //let tour = await Tour.findOne({ _id: req.params.id })
+    
+    res.status(200).json({
+        status: "ok",
+        requestTime: req.requestTime,
+        data: {
+          tour
+        }
+    })
+  } catch (err) {
+    res.status(404).json({
+      success: 'fail',
+      message: err
+    })
+  }
 }
 
 exports.createTour = async (req, res) => {
