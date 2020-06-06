@@ -10,8 +10,8 @@ let db = process.env.DATABASE.replace(
 )
 
 mongoose
-//.connect(process.env.DATABASE_LOCAL, { 
-  .connect(db, {
+  .connect(process.env.DATABASE_LOCAL, { 
+  //.connect(db, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false 
@@ -33,6 +33,14 @@ mongoose
   }
  });
 let Tour = mongoose.model('Tour', tourSchema);
+
+let testTour = new Tour({
+  name: 'Sajek vally 2',
+  price: 400
+});
+
+testTour.save().then(doc => console.log(doc))
+.catch(err => console.log(err))
 
 let port = process.env.PORT || 8000;
 app.listen(port, () => {
