@@ -23,11 +23,16 @@ exports.getAllTours = async (req, res) => {
     //let tours = await Tour.find({ duration: 5, difficulty: 'easy' });
 
     // Build Query
+    // 1) Filtering // /api/v1/tours?duration=5&difficulty=easy&page=2
     let queryObj = {...req.query};
     let filterObj = ['page', 'sort', 'limit', 'fields']
-    filterObj.forEach(el => delete queryObj[el]);
+    filterObj.forEach(el => delete queryObj[el]); 
 
-    let query = Tour.find(queryObj);
+    // 2) Advance Filtering // api/v1/tours?duration[gte]=5&difficulty=easy&page=2
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+    let query = Tour.find(JSON.parse(queryStr));
 
     // Execute query
     let tours = await query;
