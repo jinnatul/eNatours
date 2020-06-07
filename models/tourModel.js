@@ -73,6 +73,17 @@ tourSchema.pre('save', function(next) {
   next();
 })
 
+// Query Middleware
+tourSchema.pre(/^find/, function(next) {
+  this.find({ secretTour: { $ne: true } })
+  this.start = Date.now();
+  next();
+})
+tourSchema.post(/^find/, function(docs, next) {
+  console.log(`Query execute Time: ${Date.now() - this.start} milliseconds !!!`);
+  next();
+})
+
 let Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
