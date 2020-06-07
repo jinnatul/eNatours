@@ -1,13 +1,10 @@
 let Tour = require('./../models/tourModel');
 
 // Middlewares
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.prise) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Missing name or prise'
-    })
-  }
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
   next();
 }
 
