@@ -1,4 +1,5 @@
 let mongoose = require('mongoose');
+let slugify = require('slugify');
 
 let tourSchema = new mongoose.Schema({
   name: {
@@ -7,6 +8,7 @@ let tourSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  slug: String,
   duration: {
     type: Number,
     required: [true, 'A tour must have a duration']
@@ -51,7 +53,11 @@ let tourSchema = new mongoose.Schema({
     default: Date.now(),
     select: false
   },
-  startDates: [Date] 
+  startDates: [Date] ,
+  secretTour: {
+    type: Boolean,
+    default: false
+  }
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
@@ -59,6 +65,12 @@ let tourSchema = new mongoose.Schema({
 
 tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
+})
+
+// Document Middleware
+tourSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
 })
 
 let Tour = mongoose.model('Tour', tourSchema);
