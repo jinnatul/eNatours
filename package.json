@@ -27,5 +27,9 @@
   },
   "engines": {
     "node": ">=10.0.0"
+  },
+  "devDependencies": {
+    "ndb": "^1.1.5",
+    "nodemon": "^2.0.4"
   }
 }
