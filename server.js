@@ -19,6 +19,13 @@ mongoose
  }).then(()  => console.log('DB connect successfull'));
 
 let port = process.env.PORT || 8000;
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log(`Server running on ${port}`);
 });
+
+process.on('unhandleRejection', err => {
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  })
+})
