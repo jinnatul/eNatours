@@ -12,6 +12,13 @@ let handleDuplicateFieldDb = err => {
   return new AppError(message, 400);
 }
 
+let handleValidationErrorDb = err => {
+  //let errors = Object.values(error.errors).map(el => el.properties.message);
+  //console.log(errors);
+  let message = `Invalid Input data.`;
+  return new AppError(message, 400);
+}
+
 let sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -50,6 +57,7 @@ module.exports = (err, req, res, next) => {
     /****** error.name = CastError missing here so use error.kind ******/
     if (error.kind === 'ObjectId') error = handleCastErrorDb(error);
     if (error.code === 11000) error = handleDuplicateFieldDb(error);
+    if (error._message === "Validation failed") error = handleValidationErrorDb(error);
     sendErrorProd(error, res);
   }
 }
