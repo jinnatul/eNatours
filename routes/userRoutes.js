@@ -7,7 +7,11 @@ let {
   deleteUser 
 } = require('./../controllers/userController');
 
+let { signup } = require('./../controllers/authController');
+
 let router = express.Router();
+
+router.post('/signup', signup);
 
 router.route('/')
   .get(getAllUsers)
