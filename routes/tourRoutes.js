@@ -10,6 +10,8 @@ let {
   getMonthlyPlan 
 } = require('./../controllers/tourController');
 
+let { protect } = require('./../controllers/authController');
+
 let router = express.Router();
 
 //router.param('id', checkId);
@@ -24,7 +26,7 @@ router.route('/monthly-plan/:year')
   .get(getMonthlyPlan);
 
 router.route('/')
-  .get(getAllTours)
+  .get(protect, getAllTours)
   .post(createTour);
 
 router.route('/:id')
