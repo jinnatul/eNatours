@@ -10,7 +10,7 @@ let {
   getMonthlyPlan 
 } = require('./../controllers/tourController');
 
-let { protect } = require('./../controllers/authController');
+let { protect, restrictTo } = require('./../controllers/authController');
 
 let router = express.Router();
 
@@ -32,6 +32,6 @@ router.route('/')
 router.route('/:id')
   .get(getTour)
   .patch(updateTour)
-  .delete(deleteTour);
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 module.exports = router;
