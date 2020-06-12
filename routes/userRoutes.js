@@ -11,7 +11,9 @@ let {
   signup, 
   login, 
   forgotPassword, 
-  resetPassword 
+  resetPassword,
+  protect,
+  updatePassword 
 } = require('./../controllers/authController');
 
 let router = express.Router();
@@ -21,14 +23,15 @@ router.post('/login', login);
 
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
-
+router.patch('/updateMyPassword', protect, updatePassword);
+ 
 router.route('/')
   .get(getAllUsers)
-  .post(createUser)
+  .post(createUser);
 
 router.route('/:id')
   .get(getUser)
   .patch(updateUser)
-  .delete(deleteUser)
+  .delete(deleteUser);
 
 module.exports = router;
