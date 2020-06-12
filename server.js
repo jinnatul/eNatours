@@ -6,7 +6,7 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: './env/config.env' });
 let app = require('./app');
 
 //console.log(app.get('env')) // development
