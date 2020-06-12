@@ -106,3 +106,26 @@ exports.restrictTo = (...roles) => {
     next();
   }
 }
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // Get user based on Posted email
+  let user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new AppError(
+      'There is no user with this email address',
+      404
+    ));
+  }
+
+  // Generate the rangom  reset token
+  let resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  // Send it's to user email
+  
+});
+
+exports.resetPassword = (req, res, next) => {
+
+}
