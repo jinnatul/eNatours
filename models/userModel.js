@@ -1,3 +1,4 @@
+let crypto = require('crypto');
 let mongoose = require('mongoose');
 let validator = require('validator');
 let bcrypt = require('bcryptjs');
@@ -36,7 +37,14 @@ let userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!!!'
     }
   },
-  passwordChangedAt: Date
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
+  }
 });
 
 userSchema.pre('save', async function(next) {
@@ -49,7 +57,20 @@ userSchema.pre('save', async function(next) {
   // Delete passwordConfirm field
   this.passwordConfirm = undefined;
   next();
-})
+});
+
+userSchema.pre('save', function(next) {
+  if (!this.isModified('password') || this.isNew) 
+    return next();
+  
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.pre(/^find/, function(next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
 
 userSchema.methods.correctPassword = async function(
   candidatePassword,
@@ -70,6 +91,19 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
 
   // False mean not change
   return false;
+}
+
+userSchema.methods.createPasswordResetToken = function() {
+  let resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  
+    this.passwordResetExpires = Date.now() + (10 * 60 * 1000);
+    
+    return resetToken;
 }
 
 let User = mongoose.model('User', userSchema);

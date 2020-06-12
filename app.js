@@ -1,5 +1,10 @@
 let express = require('express');
 let morgan = require('morgan');
+let rateLimit = require('express-rate-limit');
+let helmet = require('helmet');
+let mongoSanitize = require('express-mongo-sanitize');
+let xss = require('xss-clean');
+let hpp = require('hpp');
 
 let AppError = require('./utils/appError');
 let globalErrorHandler = require('./controllers/errorController');
@@ -8,17 +13,51 @@ let userRouter = require('./routes/userRoutes');
 
 let app = express();
 
-// Middlewares
-//console.log(process.env.NODE_ENV);
+/******* Middlewares List ******/ 
+
+// Set security HTTP headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-app.use(express.json());
-app.use(express.static(`${__dirname}/resources/public`)); // access static content
-app.use((req, res, next) => {
-  console.log('Hello from our Middleware');
-  next();
-})
+
+// Limit requests from same API
+let limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, Please try again in an hour !!!'
+});
+app.use('/api', limiter);
+
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
+
+// Data sanitization against NoSQL query injections
+app.use(mongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
+
+// Prevent parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'maxGroupSize',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'price',
+      'difficulty'
+    ]
+  })
+);
+
+// Serving static files
+app.use(express.static(`${__dirname}/resources/public`)); 
+
+// Test Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
