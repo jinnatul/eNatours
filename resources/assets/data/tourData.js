@@ -3,7 +3,7 @@ let mongoose = require('mongoose');
 let dotenv = require('dotenv');
 let Tour = require('../../../models/tourModel');
 
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: './env/config.env' });
 
 //console.log(app.get('env')) // development
 let db = process.env.DATABASE.replace(
@@ -21,7 +21,7 @@ mongoose
 
  // Read JSON file
 let tours = JSON.parse(
-  fs.readFileSync( `${__dirname}/tours-simple.json`, 'utf-8')
+  fs.readFileSync( `${__dirname}/tours.json`, 'utf-8')
 );
 
 // Import data into Tour collection
