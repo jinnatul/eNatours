@@ -9,17 +9,16 @@ let {
   getTourStats,
   getMonthlyPlan 
 } = require('./../controllers/tourController');
-
 let { 
   protect, 
   restrictTo 
 } = require('./../controllers/authController');
 
-let { createReview } = require('./../controllers/reviewController');
-
+let reviewRouter = require('./reviewRoutes');
 let router = express.Router();
 
 //router.param('id', checkId);
+router.use('/:tourId/reviews', reviewRouter);
 
 router
   .route('/top-5-tours')
@@ -52,14 +51,6 @@ router
     protect, 
     restrictTo('admin', 'lead-guide'), 
     deleteTour
-  );
-
-router
-  .route('/:tourId/reviews')
-  .post(
-    protect, 
-    restrictTo('user'), 
-    createReview
   );
 
 module.exports = router;

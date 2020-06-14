@@ -6,9 +6,10 @@ let {
   createReview 
 } = require('./../controllers/reviewController');
 
-let router = express.Router();
+let router = express.Router({ mergeParams: true });
 
-router.route('/')
+router
+  .route('/')
   .get(getAllReviews)
   .post(
     protect, 
