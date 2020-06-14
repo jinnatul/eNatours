@@ -1,6 +1,7 @@
 let User = require('./../models/userModel');
 let catchAsync = require('./../utils/catchAsync');
 let AppError = require('./../utils/appError');
+let factory = require('./handlerfactoryController');
 
 let filterObj = (obj, ...allowedFields) => {
   let newObj = {};
@@ -10,19 +11,6 @@ let filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 }
-
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  let users = await User.find();
-
-  // Send response
-  res.status(200).json({
-      status: "ok",
-      length: users.length,
-      data: {
-        users
-      }
-  });
-});
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // Create error when user try to change password
@@ -59,30 +47,14 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'Not define'
+    message: 'This Route is Not define! Please use /signup instead.'
   });
 }
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+exports.updateUser = factory.updateOne(User); // Don't update password with this
+exports.deleteUser = factory.deleteOne(User);
