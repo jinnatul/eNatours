@@ -16,3 +16,38 @@ exports.deleteOne = Model =>
     })
   });
 
+
+exports.updateOne = Model => 
+  catchAsync(async (req, res, next) => {  
+    let doc = await Model.findByIdAndUpdate(
+      req.params.id, 
+      req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404)); 
+    }
+
+    // Send response
+    res.status(200).json({
+        status: "ok",
+        requestTime: req.requestTime,
+        data: {
+          data: doc
+        }
+    })
+  });
+
+exports.createOne = Model => 
+  catchAsync(async (req, res, next) => {
+    let doc = await Model.create(req.body);
+    // Send response
+    res.status(201).json({
+        status: "ok",
+        data: {
+          data: doc
+        }
+    })
+  });

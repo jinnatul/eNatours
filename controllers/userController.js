@@ -67,18 +67,6 @@ exports.getUser = (req, res) => {
   });
 }
 
-exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
-
+exports.createUser = factory.createOne(User);
+exports.updateUser = factory.updateOne(User); // Don't update password with this
 exports.deleteUser = factory.deleteOne(User);
