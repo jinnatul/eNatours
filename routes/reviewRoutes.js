@@ -5,6 +5,7 @@ let {
   getAllReviews,
   setTourUserIds, 
   createReview,
+  getReview,
   deleteReview,
   updateReview 
 } = require('./../controllers/reviewController');
@@ -23,6 +24,7 @@ router
 
  router
     .route('/:id')
+    .get(getReview)
     .patch(updateReview)
     .delete(deleteReview);
 
