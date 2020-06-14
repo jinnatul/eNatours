@@ -1,6 +1,7 @@
 let User = require('./../models/userModel');
 let catchAsync = require('./../utils/catchAsync');
 let AppError = require('./../utils/appError');
+let factory = require('./handlerfactoryController');
 
 let filterObj = (obj, ...allowedFields) => {
   let newObj = {};
@@ -80,9 +81,4 @@ exports.updateUser = (req, res) => {
   });
 }
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'Not define'
-  });
-}
+exports.deleteUser = factory.deleteOne(User);

@@ -3,7 +3,8 @@ let { protect, restrictTo } = require('./../controllers/authController');
 
 let { 
   getAllReviews, 
-  createReview 
+  createReview,
+  deleteReview 
 } = require('./../controllers/reviewController');
 
 let router = express.Router({ mergeParams: true });
@@ -16,5 +17,10 @@ router
     restrictTo('user'), 
     createReview
   );
+
+ router
+    .route('/:id')
+    .delete(deleteReview);
+
 
 module.exports = router;
