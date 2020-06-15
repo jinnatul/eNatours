@@ -28,7 +28,10 @@ exports.getAll = Model =>
       .sort()
       .limitFields()
       .paginate();
+
+    //let doc = await features.query.explain(); // Indexing (First read document)
     let doc = await features.query;
+
     // Send response
     res.status(200).json({
         status: "ok",
