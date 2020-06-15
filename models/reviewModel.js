@@ -1,4 +1,5 @@
 let mongoose = require('mongoose');
+let Tour = require('./tourModel');
 
 let reviewSchema = new mongoose.Schema({
     review: {
@@ -31,6 +32,12 @@ let reviewSchema = new mongoose.Schema({
   }
 );
 
+// Preventing Duplicate review each user against each Tour
+reviewSchema.index(
+  { tour: 1, user: 1 }, 
+  { unique: true }
+);
+
 reviewSchema.pre(/^find/, function(next) {
   // this.populate({
   //   path: 'tour',
@@ -47,6 +54,48 @@ reviewSchema.pre(/^find/, function(next) {
   });
   next();
 })
+
+reviewSchema.statics.calcAverageRating = async function(tourId) {
+  let stats = await this.aggregate([
+    {
+      $match: { tour: tourId }
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' }
+      }
+    }
+  ]);
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating
+    });
+  }
+  else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5
+    });
+  }
+};
+
+reviewSchema.post('save', function() {
+  this.constructor.calcAverageRating(this.tour);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+  this.now = await this.findOne();
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+  // await this.findOne(); does not work here, query has already executed
+  await this.now.constructor.calcAverageRating(this.now.tour);
+});
 
 let Review = mongoose.model('Review', reviewSchema);
 

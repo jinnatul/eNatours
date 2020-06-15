@@ -6,7 +6,8 @@ let {
   updateUser, 
   deleteUser,
   updateMe,
-  deleteMe 
+  deleteMe,
+  getMe 
 } = require('./../controllers/userController');
 
 let { 
@@ -15,20 +16,27 @@ let {
   forgotPassword, 
   resetPassword,
   protect,
-  updatePassword 
+  updatePassword,
+  restrictTo 
 } = require('./../controllers/authController');
 
 let router = express.Router();
 
 router.post('/signup', signup);
 router.post('/login', login);
-
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
-router.patch('/updateMyPassword', protect, updatePassword);
+ 
+// Protect all routes after middleware
+router.use(protect);
 
-router.patch('/updateMe', protect, updateMe);
-router.delete('/deleteMe', protect, deleteMe);
+router.patch('/updateMyPassword', updatePassword);
+router.get('/me', getMe, getUser);
+router.patch('/updateMe', updateMe);
+router.delete('/deleteMe', deleteMe);
+
+// Protect all routes after this (Only-Admin) middleware
+router.use(restrictTo('admin'));
 
 router.route('/')
   .get(getAllUsers)

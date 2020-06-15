@@ -12,11 +12,13 @@ let {
 
 let router = express.Router({ mergeParams: true });
 
+// Protect all routes after middleware
+router.use(protect);
+
 router
   .route('/')
   .get(getAllReviews)
   .post(
-    protect, 
     restrictTo('user'), 
     setTourUserIds,
     createReview
@@ -25,8 +27,14 @@ router
  router
     .route('/:id')
     .get(getReview)
-    .patch(updateReview)
-    .delete(deleteReview);
+    .patch(
+      restrictTo('user', 'admin'),
+      updateReview
+    )
+    .delete(
+      restrictTo('user', 'admin'),
+      deleteReview
+    );
 
 
 module.exports = router;

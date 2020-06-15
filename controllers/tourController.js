@@ -1,6 +1,7 @@
 let Tour = require('./../models/tourModel');
 let catchAsync = require('./../utils/catchAsync');
 let factory = require('./handlerfactoryController');
+let Apperror = require('./../utils/appError');
 
 // Middlewares
 exports.aliasTopTours = (req, res, next) => {
@@ -93,4 +94,79 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
       plan
     }
   })
+});
+
+// GeoSpatial Queries finding Tours with Radious
+// /tours-within?distance=233&center=-40,45&unit=mi
+// /tours-within/233/center/34.111745,-118.113491/unit/mi
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  let { distance, latlng, unit } = req.params;
+  let [lat, lng] = latlng.split(',');
+
+  let radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  if (!lat || !lng) {
+    next(
+      new Apperror(
+        'Please provide latitutr and longitude int the format lat,lng.', 
+        400
+      )
+    );
+  }
+
+  let tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
+  });
+  res.status(200).json({
+    status: 'ok',
+    requestTime: req.requestTime,
+    length: tours.length,
+    data: {
+      tours
+    }
+  });
+
+});
+
+exports.getDistances = catchAsync(async (req, res, next) => {
+  let { latlng, unit } = req.params;
+  let [lat, lng] = latlng.split(',');
+
+  let multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+  if (!lat || !lng) {
+    next(
+      new Apperror(
+        'Please provide latitutr and longitude int the format lat,lng.', 
+        400
+      )
+    );
+  }
+
+  let distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng * 1, lat * 1]
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier
+      }
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1
+      }
+    }
+  ]);
+
+  res.status(200).json({
+    status: 'ok',
+    requestTime: req.requestTime,
+    data: {
+      data: distances
+    }
+  });
 });

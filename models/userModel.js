@@ -47,6 +47,7 @@ let userSchema = new mongoose.Schema({
   }
 });
 
+// Document middleware
 userSchema.pre('save', async function(next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
@@ -67,6 +68,7 @@ userSchema.pre('save', function(next) {
   next();
 });
 
+// Query middleware
 userSchema.pre(/^find/, function(next) {
   this.find({ active: { $ne: false } });
   next();
