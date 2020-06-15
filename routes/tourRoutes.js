@@ -8,7 +8,8 @@ let {
   aliasTopTours,
   getTourStats,
   getMonthlyPlan,
-  getToursWithin 
+  getToursWithin,
+  getDistances 
 } = require('./../controllers/tourController');
 let { 
   protect, 
@@ -45,6 +46,10 @@ router
   .get(getToursWithin);
 // /tours-within?distance=233&center=-40,45&unit=mi
 // /tours-within/233/center/-40,45/unit/mi
+
+router
+  .route('/distances/:latlng/unit/:unit')
+  .get(getDistances);
 
 router
   .route('/')
