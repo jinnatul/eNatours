@@ -7,7 +7,8 @@ let {
   deleteTour,
   aliasTopTours,
   getTourStats,
-  getMonthlyPlan 
+  getMonthlyPlan,
+  getToursWithin 
 } = require('./../controllers/tourController');
 let { 
   protect, 
@@ -38,6 +39,12 @@ router
     restrictTo('admin', 'lead-guide', 'guide'), 
     getMonthlyPlan
   );
+
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
+// /tours-within?distance=233&center=-40,45&unit=mi
+// /tours-within/233/center/-40,45/unit/mi
 
 router
   .route('/')
